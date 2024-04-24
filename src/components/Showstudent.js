@@ -1,8 +1,10 @@
 // import React from 'react'
-import React, { useEffect, useState, useCallback } from "react";
-// import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import "../App.css";
 import { db, storage } from "../config/firebase";
+import { auth } from "../config/firebase";
+import { Navigate } from "react-router-dom";
 import {
   getDocs,
   collection,
@@ -12,7 +14,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
-
+import Navbar from "./navbar";
 // import "bootstrap/dist/css/bootstrap.min.css";
 
 // import "../firebase/storage";
@@ -20,16 +22,7 @@ import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
 export default function Showstudent() {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
-  //image viewer
-
-  const [File, setFile] = useState(false);
-
-  //end image viewer
-
-  // const [downloadURL, setDownloadURL] = useState(null);
-
-  // const imagesListRef = ref(storage, "id/");
-
+  
   const getData = async () => {
     try {
       const valRef = collection(db, "newstudent");
@@ -49,6 +42,13 @@ export default function Showstudent() {
           docData.downloadURL = downloadURL;
         }
         //image2 certificate/
+        if (docData.profileimg) {
+          const imagePath = `profile/${docData.profileimg}`;
+          console.log(docData.idimg);
+          const imageRef = ref(storage, imagePath);
+          const downloadURLcer = await getDownloadURL(imageRef);
+          docData.downloadURLProf = downloadURLcer;
+        }
         if (docData.certificateimg) {
           const imagePath = `certificate/${docData.certificateimg}`;
           console.log(docData.idimg);
@@ -73,7 +73,6 @@ export default function Showstudent() {
   }, []);
 
   console.log(data, "datadata");
-  console.log(search);
 
   const updateYes = async (id, Accept) => {
     const userDoc = doc(db, "newstudent", id);
@@ -81,15 +80,30 @@ export default function Showstudent() {
     await updateDoc(userDoc, newFields);
     console.log(newFields + " done updated");
   };
+  const handleUpdateUser = (userId) => {
+    setData((currentUsers) =>
+      currentUsers.map((user) =>
+        user.id === userId ? { ...user, Accept: 2 } : user
+      )
+    );
+  };
   const updateNo = async (id, Accept) => {
     const userDoc = doc(db, "newstudent", id);
     const newFields = { Accept: 0 };
     await updateDoc(userDoc, newFields);
     console.log(newFields + " done updated");
   };
-
-  return (
+  const handleUpdateUserNot = (userId) => {
+    setData((currentUsers) =>
+      currentUsers.map((user) =>
+        user.id === userId ? { ...user, Accept: 0 } : user
+      )
+    );
+  };
+  const isAuth = auth?.currentUser;
+  return isAuth ? (
     <>
+      <Navbar />
       <div className="mb-20">
         <div className="container mx-auto">
           <h3 className="mb-4  font-bold text-5xl text-gray-900 ">
@@ -270,7 +284,7 @@ export default function Showstudent() {
                     />
                     <img
                       className="m-5 border border-sky-500  w-1/4 rounded-t-lg  md:rounded-none"
-                      src={newstudent.downloadURLcer}
+                      src={newstudent.downloadURLProf}
                       // src="https://picsum.photos/200/300"
                       alt=""
                     />
@@ -293,8 +307,10 @@ export default function Showstudent() {
                       class: {newstudent.cls}
                     </div>
                     <div className="font-normal text-xl mb-2 text-gray-700 dark:text-gray-100 ">
-                      Accept: 
-                      {newstudent.Accept == 1 ? " Waiting for processing" : null}
+                      Accept:
+                      {newstudent.Accept == 1
+                        ? " Waiting for processing"
+                        : null}
                       {newstudent.Accept == 2 ? " Accept" : null}
                       {newstudent.Accept == 0 ? " Not Accept" : null}
                     </div>
@@ -303,6 +319,7 @@ export default function Showstudent() {
                       className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                       onClick={() => {
                         updateYes(newstudent.id, newstudent.Accept);
+                        handleUpdateUser(newstudent.id);
                       }}
                     >
                       OK
@@ -311,6 +328,7 @@ export default function Showstudent() {
                       className="focus:outline-none text-white hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                       onClick={() => {
                         updateNo(newstudent.id, newstudent.Accept);
+                        handleUpdateUserNot(newstudent.id);
                       }}
                     >
                       no
@@ -334,6 +352,8 @@ export default function Showstudent() {
       </div>
       <div>big image </div>
     </>
+  ) : (
+    <Navigate to="/" state="please log in to go to student" />
   );
 }
 

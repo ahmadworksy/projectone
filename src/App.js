@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { Auth } from "./components/auth";
 import { About } from "./components/about";
-import { Notification } from "./components/Notification";
+import { Notification } from "./components/notification";
 import { ImageGrid } from "./comps/ImageGrid";
 import "./index.css";
 
@@ -121,15 +121,12 @@ function App() {
 
   return (
     <div className="App ">
-      <Navbar />
       <Routes>
         <Route path="/" element={<Auth />} />
         <Route path="/about" element={<About />} />
-        <Route path="/Student" element={<Showstudentt />} />
+        <Route path="/student" element={<Showstudentt />} />
         <Route path="/notification" element={<Notification />} />
       </Routes>
-
-  
     </div>
   );
 }
