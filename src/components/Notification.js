@@ -60,9 +60,7 @@ export const Notification = () => {
       console.log("POST request successful:", response.data);
       console.log("POST request successful:", formData);
       console.log("POST request successful:", response);
-      // formData.notification.body = "";
-      // formData.notification.title = "";
-      // Handle response data here
+   
     } catch (error) {
       console.error("There was a problem with the POST request:", error);
       // Handle error here
@@ -128,13 +126,7 @@ export const Notification = () => {
   ) : (
     <>
       <Navigate to="/" state="please log in to go to notifcation" />
-      {/* <Navigate
-        to={{
-          pathname: "/please",
-          state: { statepParam: true },
-        }}
-        replace
-      /> */}
+     
     </>
   );
 };

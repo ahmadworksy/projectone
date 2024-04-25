@@ -1,4 +1,4 @@
-// import React from 'react'
+
 import React, { useEffect, useState } from "react";
 
 import "../App.css";
@@ -8,12 +8,10 @@ import { Navigate } from "react-router-dom";
 import {
   getDocs,
   collection,
-  addDoc,
-  deleteDoc,
   updateDoc,
   doc,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
+import { ref,  getDownloadURL, listAll } from "firebase/storage";
 import Navbar from "./navbar";
 // import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -285,8 +283,8 @@ export default function Showstudent() {
                     <img
                       className="m-5 border border-sky-500  w-1/4 rounded-t-lg  md:rounded-none"
                       src={newstudent.downloadURLProf}
-                      // src="https://picsum.photos/200/300"
-                      alt=""
+         
+                      alt={newstudent.downloadURLProf}
                     />
                   </div>
 
@@ -356,5 +354,3 @@ export default function Showstudent() {
     <Navigate to="/" state="please log in to go to student" />
   );
 }
-
-// // export default Showstudent

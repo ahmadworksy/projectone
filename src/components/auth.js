@@ -150,8 +150,3 @@ export const Auth = () => {
     </>
   );
 };
-
-//  <button onClick={signIn} className="click-singin">
-//    {" "}
-//    Sign In new accuount
-//  </button>;

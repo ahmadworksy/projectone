@@ -2,7 +2,7 @@ import React from "react";
 import cta_one_shape_1 from "../assets/Artboard11.png";
 import { NavLink } from "react-router-dom";
 
-// import d from "../../public/1x/Artboard11.png"
+
 
 function navbar() {
   return (
